@@ -15,6 +15,20 @@ impl fmt::Display for PoolCreationError {
     }
 }
 
+struct Worker {
+    id: usize,
+    thread: thread::JoinHandle<()>,
+}
+
+impl Worker {
+    fn new(id: usize) -> Worker {
+        Worker {
+            id,
+            thread: thread::spawn(|| {}),
+        }
+    }
+}
+
 pub struct ThreadPool {
     threads: Vec<thread::JoinHandle<()>>,
 }
