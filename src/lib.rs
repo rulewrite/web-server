@@ -1,4 +1,4 @@
-use std::{error::Error, fmt};
+use std::{error::Error, fmt, thread};
 
 #[derive(Debug)]
 pub struct PoolCreationError;
@@ -15,7 +15,9 @@ impl fmt::Display for PoolCreationError {
     }
 }
 
-pub struct ThreadPool;
+pub struct ThreadPool {
+    threads: Vec<thread::JoinHandle<()>>,
+}
 
 impl ThreadPool {
     /// 새 스레드풀을 생성
@@ -28,12 +30,18 @@ impl ThreadPool {
     pub fn new(size: usize) -> ThreadPool {
         assert!(size > 0);
 
-        ThreadPool
+        let mut threads = Vec::with_capacity(size);
+
+        for _ in 0..size {
+            // 스레드를 생성하고 벡터에 저장
+        }
+
+        ThreadPool { threads }
     }
 
     pub fn build(size: usize) -> Result<ThreadPool, PoolCreationError> {
         if size > 0 {
-            return Ok(ThreadPool);
+            return Ok(ThreadPool::new(size));
         }
 
         Err(PoolCreationError)
