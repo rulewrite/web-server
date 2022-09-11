@@ -22,10 +22,9 @@ struct Worker {
 
 impl Worker {
     fn new(id: usize) -> Worker {
-        Worker {
-            id,
-            thread: thread::spawn(|| {}),
-        }
+        let thread = thread::spawn(|| {});
+
+        Worker { id, thread }
     }
 }
 
