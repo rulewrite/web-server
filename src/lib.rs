@@ -1,3 +1,20 @@
+use std::{error::Error, fmt};
+
+#[derive(Debug)]
+pub struct PoolCreationError;
+
+impl Error for PoolCreationError {
+    fn description(&self) -> &str {
+        "스레드 풀의 size는 0일 수 없다."
+    }
+}
+
+impl fmt::Display for PoolCreationError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "PoolCreationError: 스레드 풀의 개수는 0일 수 없다.")
+    }
+}
+
 pub struct ThreadPool;
 
 impl ThreadPool {
@@ -12,6 +29,14 @@ impl ThreadPool {
         assert!(size > 0);
 
         ThreadPool
+    }
+
+    pub fn build(size: usize) -> Result<ThreadPool, PoolCreationError> {
+        if size > 0 {
+            return Ok(ThreadPool);
+        }
+
+        Err(PoolCreationError)
     }
 
     pub fn execute<F>(&self, f: F)
