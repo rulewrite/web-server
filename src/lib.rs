@@ -22,7 +22,7 @@ impl fmt::Display for PoolCreationError {
 
 struct Worker {
     id: usize,
-    thread: thread::JoinHandle<()>,
+    thread: Option<thread::JoinHandle<()>>,
 }
 
 impl Worker {
@@ -35,7 +35,10 @@ impl Worker {
             job();
         });
 
-        Worker { id, thread }
+        Worker {
+            id,
+            thread: Some(thread),
+        }
     }
 }
 
@@ -93,7 +96,9 @@ impl Drop for ThreadPool {
         for worker in &mut self.workers {
             println!("워커 {} 종료", worker.id);
 
-            worker.thread.join().unwrap();
+            if let Some(thread) = worker.thread.take() {
+                thread.join().unwrap();
+            }
         }
     }
 }
